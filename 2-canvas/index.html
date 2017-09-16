@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		
+		<style type="text/css">
+		*{ padding: 0; margin: 0;}
+			.cir{
+				background: red;
+				position: absolute;
+				width: 4px;
+				height: 4px;
+			}
+			
+			#map{
+				
+				position: relative;
+				width: 400px;
+				height:500px;
+				margin:100px auto;
+				
+			}
+			#map-area
+			{
+				position: absolute;
+				border: red solid 1px;
+				top:200px;
+				left: 100px;
+				width: 400px;
+				height: 500px;
+			}
+			#myCanvas{
+				position: absolute;
+				top:0;
+				left: 0;
+			}
+		</style>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js" ></script>
+		<script>
+          window.onload=function ()
+          {
+          	
+          	 var arrX=[];
+          	 var arrY=[];
+          	 var arrjson={};
+          	 var i=1;
+          	 var mapid=document.getElementById("map-area");
+          	 var id=document.getElementById("map");
+          	 var startX=mapid.offsetLeft+id.offsetLeft;
+          	 var startY=mapid.offsetTop+id.offsetTop;
+            
+          	 
+	         mapid.onclick=function (ev)
+	         {
+	         	 var scrollTop=document.documentElement.scrollTop||document.body.scrollTop;
+	             var scrollLeft=document.documentElement.scrollLeft||document.body.scrollLeft;
+	             
+		         var oEvent=ev||event;
+		         var endX=(oEvent.pageX||oEvent.clientX+scrollLeft)-startX;
+		         var endY=(oEvent.pageY||oEvent.clientY+scrollTop)-startY;
+		         
+		         arrX.push(endX);
+		         arrY.push(endY);
+		         $("#map-area").append("<div class='cir'>&nbsp;</div>");
+		         $("#map-area div.cir:nth-of-type("+i+")").css({"left":endX+'px',"top":endY+'px'});
+		         i++;
+		        
+	         }
+	         function drawPath(){
+			    var canvas=document.getElementById("myCanvas");
+			    var ctx=canvas.getContext("2d");
+			    /*ctx.beginPath();
+			    ctx.moveTo(25,25);
+			    ctx.lineTo(105,25);
+			    ctx.lineTo(205,67);
+			    ctx.lineTo(25,105);
+			    ctx.fill();*/
+			    ctx.beginPath();
+			    ctx.moveTo(arrX[0],arrY[0]);
+			    var flag;
+			    for(flag=1;flag<arrX.length;flag++)
+			    {
+			    	ctx.lineTo(arrX[flag],arrY[flag]);
+			    		alert(arrX[flag]+"--"+arrY[flag]);
+			    }
+			    ctx.closePath();
+			    ctx.stroke();
+			
+		    }
+	         $("#map-area").append("<canvas id='myCanvas' width='400' height='500' style='border: blue solid 1px;'></canvas>");
+	         document.ondblclick=function()
+	         {
+	         	
+	         	drawPath();
+	         
+	         	/*var i;
+	         	for(i=0;i<arrX.length;i++)
+	         	{
+	         		arrjson[i]["x"]=arrX[i];
+	         		arrjson[i]["y"]=arrY[i];
+	         	}
+	         	alert(arrjson[0]);*/
+	         }
+	         
+	         
+	         
+          }
+        </script>
+		<!--<script>
+		  
+			function getMousePos(event) {
+				
+               var e = event || window.event;
+               var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+               var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+               var x = e.pageX || e.clientX + scrollX;
+               var y = e.pageY || e.clientY + scrollY;
+              
+               alert('x: ' + x + '\ny: ' + y);
+               
+               //return { 'x': x, 'y': y };
+            }
+			
+		</script>-->
+	</head>
+	
+	<body style="height: 1000px;">
+		
+		<div id="map">
+			
+			<div id="map-area">
+				
+			</div>
+			
+		</div>
+		
+	</body>
+</html>

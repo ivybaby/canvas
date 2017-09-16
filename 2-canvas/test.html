@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+      <style> 
+      svg{cursor: pointer;}
+        #fade{ 
+            display: none; 
+            position: absolute; 
+            top: 0%; 
+            left: 0%; 
+            width: 100%; 
+            height: 100%; 
+            z-index:1001;
+            /*background-color: #333333; 
+            -moz-opacity: 0.8; 
+            opacity:.80; 
+            filter: alpha(opacity=80);*/
+        } 
+        #fade > div{  
+        	display: none; 
+            position: absolute;
+            z-index:1002; 
+        }
+        #fade .aclose{ position: absolute; top: -10px; right: -10px;z-index:1003;}
+        #rectBox { 
+            top: 25%; 
+            left: 25%; 
+            width: 300px; 
+            height: 300px;  
+            background-color: red;   
+        } 
+        #ellipseBox{
+        	top: 15%; 
+            left: 25%; 
+            width: 300px; 
+            height: 200px; 
+            background-color: black;
+        }
+        #pathBox{
+        	top: 15%; 
+            left: 25%; 
+            width: 100px; 
+            height: 150px; 
+            background-color: black;
+        }
+        
+    </style> 
+    <script type="text/javascript" src="http://sandbox.runjs.cn/js/sandbox/jquery/jquery-1.7.2.min.js" ></script>
+</head>
+<body>
+    <svg width="640" height="480" xmlns="http://www.w3.org/2000/svg" >
+    	<defs>
+          <filter id="Gaussian_Blur">
+          	<!--<feConvolveMatrix order="4,4" 
+               kernelMatrix="
+               1 0 0 0
+               0 1 0 0
+               0 0 1 0 
+               0 0 0 1" in="SourceAlpha" result="BEVEL" />
+
+            <feOffset dx="1" dy ="1" in="BEVEL" result="OFFSET" />
+            <feMerge>
+              <feMergeNode in="OFFSET" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>-->
+            <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+            
+          </filter>
+       </defs>
+       <g>
+         <title>Layer 1</title>
+         <rect x="32" y="35" width="51" height="35" id="svg_1" class="light" data-src = "#rectBox" fill="#FF0000" stroke="#000000" stroke-width="5" data-fill = "#FF0000" data-stroke = "#000000" />
+         <ellipse cx="69" cy="56" id="svg_2" fill="#0000ff" data-src="#ellipseBox" stroke="#000000" stroke-width="5" rx="24" ry="15" data-fill = "#0000ff" data-stroke = "#000000"/>
+         <path d="m130.66666,23.16666c0,2 -5.98624,20.56885 -9,52c-0.38179,3.98174 -0.08769,6.03067 1,9c1.85227,5.05659 2.88134,13.02521 4,18c0.90456,4.02266 3,9 5,12c0,0 0.07613,-0.38268 1,0c1.30656,0.5412 13.91295,4.37258 26,7c26.83244,5.83269 49.9626,7.49937 60,8c7.99007,0.39851 16.97923,-2.09584 26,-4c9.97816,-2.10625 13.86926,-2.30196 19,-6c4.05621,-2.92355 4.02609,-8.14206 2,-19c-1.33542,-7.15658 -4,-15 -4,-16c0,-1 -1.1731,-2.85273 -2,-4c-2.6149,-3.62798 -8.50432,-8.59399 -13,-11c-4.9875,-2.66924 -5,-5 -5,-5c-3,-1 -5.92467,-3.62698 -20,-5c-18.93642,-1.8472 -27.60896,-4.06147 -35,-1c-1.30656,0.54119 -2.53493,0.31075 -4,2c-2.07193,2.38895 -4.99023,8.79026 -6,16c-0.41611,2.971 0,4 0,6c0,1 0,2 0,2c1,0 2.69344,2.4588 4,3c0.92387,0.38268 -0.15224,-0.23463 -2,-1c-2.61313,-1.08239 -4,-2 -6,-2c-1,0 -0.93414,-0.14429 -3,-1c-2.92157,-1.21015 -3.30449,0.53073 -7,-1c-3.91969,-1.62359 -4.34619,-2.70546 -6,-5c-2.6149,-3.62798 -3.41589,-6.76108 -5,-10c-1.38936,-2.84072 -3.513,-5.594 -5,-8c-1.66251,-2.68999 -3,-6 -3,-10c0,-5 0,-8 0,-10c0,0 0,-1 0,-3c0,-3 0.22975,-4.02675 0,-5c-0.51375,-2.17625 -1.69255,-2.18601 -3,-4c-1.65381,-2.29454 -3.1731,-2.85273 -4,-4c-1.30745,-1.81399 -3,-3 -4,-4l-1,0l-1,0l-1,0" id="svg_3" stroke-linecap="null" stroke-linejoin="null" data-src = "#pathBox" stroke-dasharray="null" stroke-width="5" stroke="#000000" fill="#7f0000" data-fill = "#7f0000" data-stroke = "#000000"/>
+      </g>
+    </svg>
+    <div id="fade" >
+    	<div id="rectBox"><a href="#" class="aclose">关闭</a></div> 
+    	<div id="ellipseBox" ><a href="#" class="aclose">关闭</a></div>
+    	<div id="pathBox" ><a href="#" class="aclose">关闭</a></div>
+    </div> 
+    <script>
+    	$(function(){
+    		var vInit=function(){
+    			$("svg").find("rect,ellipse,path").each(function(){
+    					var ofill=$(this).attr("data-fill");
+    					var ostroke=$(this).attr("data-stroke");
+    					$(this).attr({"fill":ofill,"stroke":ostroke}).removeAttr("filter");
+    				});
+    		};
+    		$("svg").find("rect,ellipse,path").each(function(){
+    			$(this).on("click",function(e){
+    				e.preventDefault();
+    				var x=$(this).clone();
+    				x.insertAfter($(this)).attr({"id":"dd"});
+    				vInit();
+    				var scrollTop=document.documentElement.scrollTop||document.body.scrollTop; //滚动的高度
+		            var screenHeight=document.body.scrollHeight;//屏幕的高度
+		            var screenWidth=document.body.scrollWidth;//屏幕的宽度
+    				var dataSrc=$(this).attr("data-src");
+    				if(dataSrc){
+    					$("#fade,#fade>div").css({"display":"none"});
+    				    $(this).attr({"fill":"#00ff00","stroke":"#ff0000","filter":"url(#Gaussian_Blur)"});
+    				    $("#fade").css({"top":scrollTop+"px"});
+    				    var iTop=parseInt((screenHeight-$(dataSrc).outerHeight())/2);
+    				    var iLeft=parseInt((screenWidth-$(dataSrc).outerWidth())/2);
+
+    				    $(dataSrc).css({"top":iTop+"px","left":iLeft+"px"});
+    				    $("#fade,"+dataSrc+"").css({"display":"block"});
+    				    $("body").css({"overflow-y":"hidden"});
+    				}else{return;}
+
+    			});
+    			$("#fade").on("click",function(e){
+    				e.preventDefault();
+    				$("#dd").remove();
+    				$(this).css({"display":"none"});
+    				vInit();
+    				$("body").css({"overflow-y":"scroll"});
+    			});
+    			$("#fade").children("div").each(function(){
+    				$(this).on("click",function(e){
+    					if (e.stopPropagation){e.stopPropagation();} 
+                        else{e.cancelBubble = true;} 
+    				})
+    		   });
+    		   $("#fade").find(".aclose").on("click",function(e){
+    		   	   e.preventDefault();
+    		   	   $(this).closest("#fade").click();
+    		   });
+    	    })
+    	});
+    </script>
+</body>
+</html>

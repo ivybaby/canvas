@@ -1,0 +1,321 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>CSS绘制各种常见图像集合-动力学院</title>
+<style>
+body {
+	padding-left: 150px;
+}
+div {
+	margin: 50px;
+	display: inline-block;
+}
+/*六边形*/
+#hexagon {
+	width: 100px;
+	height: 55px;
+	background: red;
+	position: relative;
+	margin-top: 50px;
+}
+#hexagon:before, #hexagon:after {
+	content: "";
+	position: absolute;
+	left: 0;
+	width: 0;
+	height: 0;
+	border-left: 50px solid transparent;
+	border-right: 50px solid transparent;
+}
+#hexagon:before {
+	top: -25px;
+	border-bottom: 25px solid red;
+}
+#hexagon:after {
+	bottom: -25px;
+	border-top: 25px solid red;
+}
+/*八卦*/
+#yin-yang {
+	width: 96px;
+	height: 48px;
+	background: #eee;
+	border-color: red;
+	border-style: solid;
+	border-width: 2px 2px 50px 2px;
+	border-radius: 100%;
+	position: relative;
+}
+#yin-yang:before, #yin-yang:after {
+	content: "";
+	width: 12px;
+	height: 12px;
+	border-radius: 100%;
+	position: absolute;
+	top: 50%;
+}
+#yin-yang:before {
+	left: 0;
+	background: #eee;
+	border: 18px solid red;
+}
+#yin-yang:after {
+	left: 50%;
+	background: url(http://www.edudongli.com/demo/img/dong.png);
+	border: 18px solid #eee;
+	background-size: contain;
+}
+/*钻石*/
+#cut-diamond {
+	border-style: solid;
+	border-color: transparent transparent red transparent;
+	border-width: 0 25px 25px 25px;
+	height: 0;
+	width: 50px;
+	position: relative;
+	margin: 20px 0 150px 0;
+}
+#cut-diamond:after {
+	content: "";
+	position: absolute;
+	top: 25px;
+	left: -25px;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-color: red transparent transparent transparent;
+	border-width: 70px 50px 0 50px;
+}
+/*十二角星*/
+#burst-12 {
+	background: red;
+	width: 80px;
+	height: 80px;
+	position: relative;
+	text-align: center;
+}
+#burst-12:before, #burst-12:after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 80px;
+	width: 80px;
+	background: red;
+}
+#burst-12:before {
+	transform: rotate(30deg);
+}
+#burst-12:after {
+	transform: rotate(60deg);
+}
+/*对话框*/
+#talkbubble {
+	width: 120px;
+	height: 80px;
+	background: red;
+	position: relative;
+	border-radius: 10px;
+}
+#talkbubble:before {
+	content: "";
+	position: absolute;
+	right: 100%;
+	top: 26px;
+	width: 0;
+	height: 0;
+	border-top: 13px solid transparent;
+	border-right: 26px solid red;
+	border-bottom: 13px solid transparent;
+}
+/*食逗人*/
+#pacman {
+	width: 0px;
+	height: 0px;
+	border: 60px solid red;
+	border-right-color: transparent;
+	border-radius: 60px;
+}
+/*鸡蛋*/
+#egg {
+	width: 126px;
+	height: 180px;
+	background-color: red;
+	/*border-radius: 63px 63px 63px 63px / 108px 108px 72px 72px; 使用定值或下面比例都行*/
+	border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+/*无穷大符号*/
+#infinity {
+	position: relative;
+	width: 212px;
+	height: 100px;
+}
+#infinity:before, #infinity:after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 60px;
+	height: 60px;
+	border: 20px solid red;
+	border-radius: 50px 50px 0 50px;
+	transform: rotate(-45deg);
+}
+#infinity:after {
+	left: auto;
+	right: 0;
+	border-radius: 50px 50px 50px 0;
+	transform: rotate(45deg);
+}
+/*爱心*/
+#heart {
+	position: relative;
+	width: 100px;
+	height: 90px;
+}
+#heart:before, #heart:after {
+	position: absolute;
+	content: "";
+	left: 50px;
+	top: 0;
+	width: 50px;
+	height: 80px;
+	background: red;
+	border-radius: 50px 50px 0 0;
+	transform: rotate(-45deg);
+	transform-origin: 0 100%;
+}
+#heart:after {
+	left: 0;
+	transform: rotate(45deg);
+	transform-origin : 100% 100%;
+}
+/*五角大楼*/
+#pentagon {
+	position: relative;
+	width: 54px;
+	border-width: 50px 18px 0;
+	border-style: solid;
+	border-color: red transparent;
+}
+#pentagon:before {
+	content: "";
+	position: absolute;
+	height: 0;
+	width: 0;
+	top: -85px;
+	left: -18px;
+	border-width: 0 45px 35px;
+	border-style: solid;
+	border-color: transparent transparent red;
+}
+/*五角星*/
+#star-five {
+	margin: 50px 0;
+	position: relative;
+	color: red;
+	width: 0px;
+	height: 0px;
+	border-right: 100px solid transparent;
+	border-bottom: 70px solid red;
+	border-left: 100px solid transparent;
+	transform: rotate(35deg);
+}
+#star-five:before {
+	border-bottom: 80px solid red;
+	border-left: 30px solid transparent;
+	border-right: 30px solid transparent;
+	position: absolute;
+	height: 0;
+	width: 0;
+	top: -45px;
+	left: -65px;
+	display: block;
+	content: '';
+	transform: rotate(-35deg);
+}
+#star-five:after {
+	content: '';
+	position: absolute;
+	display: block;
+	color: red;
+	top: 3px;
+	left: -105px;
+	width: 0px;
+	height: 0px;
+	border-right: 100px solid transparent;
+	border-bottom: 70px solid red;
+	border-left: 100px solid transparent;
+	transform: rotate(-70deg);
+}
+/*六角星*/
+#star-six {
+	width: 0;
+	height: 0;
+	border-left: 50px solid transparent;
+	border-right: 50px solid transparent;
+	border-bottom: 100px solid red;
+	position: relative;
+}
+#star-six:after {
+	width: 0;
+	height: 0;
+	border-left: 50px solid transparent;
+	border-right: 50px solid transparent;
+	border-top: 100px solid red;
+	position: absolute;
+	content: "";
+	top: 30px;
+	left: -50px;
+}
+/*梯形-信封*/
+#trapezoid {
+	width: 100px;
+	height: 3px;
+	border: 60px #0033CC solid;
+	border-top: 50px solid red;
+	border-left-width: 50px;
+}
+/*平行四边形*/
+#parallelogram {
+	width: 150px;
+	height: 100px;
+	transform: skew(20deg);
+	background: red;
+}
+/*右下三角*/
+#triangle-bottomright {
+	width: 0;
+	height: 0;
+	border-bottom: 100px solid red;
+	border-left: 100px solid transparent;
+}
+/*椭圆*/
+#oval {
+	width: 200px;
+	height: 100px;
+	background: red;
+	border-radius: 100px / 50px;
+}
+</style>
+</head>
+
+<body>
+<div class="hexagon" id="hexagon"></div>
+<div class="yin-yang" id="yin-yang"></div>
+<div class="cut-diamond" id="cut-diamond"></div>
+<div class="burst-12" id="burst-12"></div>
+<div class="talkbubble" id="talkbubble"></div>
+<div class="pacman" id="pacman"></div>
+<div class="egg" id="egg"></div>
+<div class="infinity" id="infinity"></div>
+<div class="heart" id="heart"></div>
+<div class="pentagon" id="pentagon"></div>
+<div class="star-five" id="star-five"></div>
+<div class="star-six" id="star-six"></div>
+<div class="trapezoid" id="trapezoid" ></div>
+<div class="parallelogram" id="parallelogram"></div>
+<div class="triangle-bottomright" id="triangle-bottomright"></div>
+<div class="oval" id="oval"></div>
+</body>
+</html>
