@@ -92,9 +92,66 @@
     			}
     		}   
         
-        
-具体的请看：https://github.com/ivybaby/canvas/tree/master/2-canvas
+#室内平面图#
+/setPosition/用svg-editor 实现添加落位
 
+![室内图](https://github.com/ivybaby/canvas/blob/master/setPosition/HC8DT%7DE~3LGRJ%5D~%5DXOHU5JT.jpg)
+
+本文就展示最重要的代码，添加落位，也就是添加楼层单元信息
+
+     //添加一个落位
+    function SaveDicrection(unitid) {
+        //选择unit时设置id,未选时保存页面上的已有元素(用于删除功能)
+        if (unitid != null && unitid != "" && unitid.length > 35) {
+            //获取选中的SVG
+             
+            var doc = document.getElementById('svgedit').contentDocument;//用于取子ID
+            var svgSelect = doc.getElementById('elem_id');
+            if (svgSelect != null) {
+                var svg = doc.getElementById(svgSelect.value);
+                svg.setAttribute('id', unitid.replace(/\,/g, '—'));//一次选择多个资源 所有,换成+
+                ///alert(unitid.replace(/\,/g, '—'));
+                var svgCanvas = new embedded_svg_edit(document.getElementById('svgedit'));
+                svgCanvas.getSvgString()(handleSvgData);
+            }
+        } else {
+            alert('请选择预添加的单元！');
+            return;
+        }
+    }
+   
+保存落位
+
+
+    //保存所有落位
+    function saveSvg() {
+        var svgCanvas = new embedded_svg_edit(document.getElementById('svgedit'));
+        svgCanvas.getSvgString()(handleSvgData);
+    }
+    
+    
+加载落位
+
+    var width = document.getElementById('svgWidthHeight').getAttribute('width');
+                    var height = document.getElementById('svgWidthHeight').getAttribute('height');
+
+                    
+                    //设置元素
+                    //匹配:<svg width="xxx" height="xxx" 
+                    var svgElementReg = /(\s*\<\s*svg\s*width\s*\=\s*)(\")(\d+)(\")(\s*)(height)(\s*\=\s*\")(\d+)(\")/;
+                    var group = data.Data.SVGElement.match(svgElementReg);
+                    var svgWHstr = group[0];
+                    var imgWHstr = group[0].replace(group[3], width).replace(group[8], height);
+                    var elements = data.Data.SVGElement.replace(svgWHstr, imgWHstr);
+
+                    //console.log(elements);
+                    
+                    var svgCanvas = new embedded_svg_edit(document.getElementById('svgedit'));
+                    svgCanvas.setSvgString(elements);
+
+由于原始完整的html文件遗失，所以部分.net语言展现，如果所需，自己提取。
+
+具体的请看：https://github.com/ivybaby/canvas/tree/master/2-canvas
 
 转载请注明出处：https://github.com/ivybaby/canvas/tree/master/2-canvas
         
