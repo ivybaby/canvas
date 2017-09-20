@@ -1,0 +1,281 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="PropertyUnitSvg.aspx.cs" Inherits="BRMS.Web.UI.BasicData.PropertyUnitSvg" %>
+
+<meta http-equiv="expires" content="0">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head id="Head1" runat="server">
+    <title>以SVG方式加载落位图</title>
+    <style type="text/css">
+        .button {
+            padding: 9px 12px;
+            color: white!important;
+            background: #3c8dbc;
+            font-weight: normal;
+            line-height: 16px;
+            font-size: 15px;
+            text-align: center;
+            font-family: sans-serif;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            zoom: 1;
+            -webkit-box-sizing: border-box;
+            border: 1px solid #000;
+            border-top-left-radius: 2px;
+            border-top-right-radius: 2px;
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius: 2px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <form id="form1" runat="server">
+         <input type="hidden" id="svgWidthHeight" width="480" height="640" />
+            <%--<button onclick="loadSvg();">Load example</button>
+            <button onclick="saveSvg();">Save data</button>
+            <br />--%>
+        <div>
+            <f:Button ID="SaveUnitImage" runat="server" CssStyle="margin-left:10px" OnClick="SaveUnitImage_Click" Text="添加落位"></f:Button>
+            &nbsp;&nbsp;
+            <input id="delUnitSvg" type="button" class="button"  value="更新落位" onclick="saveSvg();" />
+        </div>
+            
+
+        <div id="div_main"></div>
+            <iframe  id="svgedit" src="/svg-edit-2.6/svg-editor.html" onload="init_embed()"  ></iframe>
+
+            <f:PageManager ID="PageManager1" AutoSizePanelID="formPanel" runat="server"></f:PageManager>
+         
+            <f:HiddenField runat="server" ID="PropertyUnitId"></f:HiddenField>
+            <f:HiddenField runat="server" ID="PropertyUnitCode"></f:HiddenField>
+            <f:Window ID="SetTradeVer" EnableIFrame="true" EnableMaximize="false" EnableResize="true" Target="Parent" runat="server" Height="800px" Width="1050px" Title="设置招商定位" Hidden="true" OnClose="SetTradeVer_Close" >
+            </f:Window>
+         
+    </form>
+</body>
+
+</html>
+<script type="text/javascript" src="/svg-edit-2.6/embedapi.js?randomId=<%=new Random()%>"></script>
+<script type="text/javascript" src="/js/jquery-1.8.0.min.js?randomId=<%=new Random()%>"></script>
+<script type="text/javascript">
+    var floorId = '<%=Request.QueryString["FloorId"]%>';
+    var type = '<%=Request.QueryString["Type"]%>';
+     
+    function init_embed() {
+     
+        //var mainButton = doc.getElementById('main_button');
+        //mainButton.style.display = 'none';
+
+
+        var iframe = document.getElementById("svgedit");
+        if (!iframe.readyState || iframe.readyState == "complete") {
+            //加载楼层图
+            GetImage(floorId);
+        }
+    }
+
+    function handleSvgData(data, error) {
+        if (error) {
+            alert('error ' + error);
+        }
+        else {
+
+            //SVG主元素//取页面上的所有unit的id
+            var UnitIds = new Array();
+
+            var doc = document.getElementById('svgedit').contentDocument;//用于取子ID
+            var svgcontent = doc.getElementById("svgcontent");//<svg></svg>
+            var children = svgcontent.childNodes;
+            var k = 0;
+            for (var i = children.length - 1; i >= 0; i--) {
+                var subChildren = children[i].childNodes;
+                for (var j = subChildren.length - 1; j >= 0; j--) {
+                    if (subChildren[j].id.indexOf('-') >= 0) {
+                        UnitIds[k++] = subChildren[j].id;
+                    }
+                   
+                }
+            }
+
+            //console.log(data);
+
+            //保存SVG位置信息
+            $.ajax({
+                type: "POST",
+                url: "PropertyUnitImage.ashx",
+                data: {
+                    "Action": "SaveSVGDirect", FloorId: floorId, DirectionSVG: data, SVGUnitId: UnitIds.join(',')//多个区域之间用，分隔
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data.Success) {
+                        alert("落位信息保存成功！");
+                        LoadDirect(floorId);
+
+                    } else {
+                        alert("落位信息保存失败！");
+                    }
+                }
+
+            });
+        }
+    }
+
+    //function loadSvg() {
+    //    var svgElement = '<svg width="1024" height="768" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g><title> </title></g></svg>';//用于加载SVG元素
+    //    svgCanvas.setSvgString(svgElement);
+    //}
+
+    //保存所有落位
+    function saveSvg() {
+        var svgCanvas = new embedded_svg_edit(document.getElementById('svgedit'));
+        svgCanvas.getSvgString()(handleSvgData);
+    }
+    ////////原svg-edit结束
+    
+
+    //////////自定义方法/////////////////
+    $(function () {
+        $('#svgedit').attr('width', parseInt($(window.parent).width() * 0.9));
+        $('#svgedit').attr('height', parseInt($(window.parent).height() * 0.9));
+    });
+
+    //添加一个落位
+    function SaveDicrection(unitid) {
+        //选择unit时设置id,未选时保存页面上的已有元素(用于删除功能)
+        if (unitid != null && unitid != "" && unitid.length > 35) {
+            //获取选中的SVG
+             
+            var doc = document.getElementById('svgedit').contentDocument;//用于取子ID
+            var svgSelect = doc.getElementById('elem_id');
+            if (svgSelect != null) {
+                var svg = doc.getElementById(svgSelect.value);
+                svg.setAttribute('id', unitid.replace(/\,/g, '—'));//一次选择多个资源 所有,换成+
+                ///alert(unitid.replace(/\,/g, '—'));
+                var svgCanvas = new embedded_svg_edit(document.getElementById('svgedit'));
+                svgCanvas.getSvgString()(handleSvgData);
+            }
+        } else {
+            alert('请选择预添加的单元！');
+            return;
+        }
+    }
+   
+  
+    //加载落位
+    function LoadDirect(floor) {
+
+        $.ajax({
+            type: "POST",
+            url: "PropertyUnitImage.ashx",
+            data: {
+                "Action": "GetSVGDirect", FloorId: floor//, SoldType: soldType
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data!=null&&data.Success) {
+                    var width = document.getElementById('svgWidthHeight').getAttribute('width');
+                    var height = document.getElementById('svgWidthHeight').getAttribute('height');
+
+                    
+                    //设置元素
+                    //匹配:<svg width="xxx" height="xxx" 
+                    var svgElementReg = /(\s*\<\s*svg\s*width\s*\=\s*)(\")(\d+)(\")(\s*)(height)(\s*\=\s*\")(\d+)(\")/;
+                    var group = data.Data.SVGElement.match(svgElementReg);
+                    var svgWHstr = group[0];
+                    var imgWHstr = group[0].replace(group[3], width).replace(group[8], height);
+                    var elements = data.Data.SVGElement.replace(svgWHstr, imgWHstr);
+
+                    //console.log(elements);
+                    
+                    var svgCanvas = new embedded_svg_edit(document.getElementById('svgedit'));
+                    svgCanvas.setSvgString(elements);
+
+
+                } else {
+                    alert("未设置落位信息！");
+                    //加载背景图
+
+                    var width = document.getElementById('svgWidthHeight').getAttribute('width');
+                    var height = document.getElementById('svgWidthHeight').getAttribute('height');
+
+                    var svgElement = '<svg width="' + width + '" height="' + height + '" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g><title> </title></g></svg>';//用于加载SVG元素
+
+                    var svgCanvas = new embedded_svg_edit(document.getElementById('svgedit'));
+                    svgCanvas.setSvgString(svgElement);
+                }
+
+                ////设置背景及语言信息
+
+                var doc = document.getElementById('svgedit').contentDocument;//用于取子ID
+
+                //var elem = window.frames["svgedit"].contentWindow.document.getElementById("canvas_bg_url");
+
+                //设置背景图
+                doc.getElementById('canvas_bg_url').value = document.getElementById('svgWidthHeight').value;
+                //设置语言
+                doc.getElementById("lang_zh-CN").selected = true;
+                //应用设置
+                doc.getElementById('tool_prefs_save').click();
+
+            }
+
+        });
+    }
+
+    ////设置select操作
+    //function setSelected(selectId,optionId) {
+    //    var length = selectId.options.length - 1;
+    //    for (var i = length; i >= 0; i--) {
+    //        if (selectId[i].id === optionId || selectId[i].value === optionId) {
+    //            selectId[i].selected = true;
+    //            break;
+    //        }
+    //    }
+    //}
+
+    //加载楼栋图
+    function GetImage(floor) {
+        //不显示主菜单
+        var doc = document.getElementById('svgedit').contentDocument;//用于取子ID
+        doc.getElementById('main_button').style.display = 'none';
+
+        $.ajax({
+            type: "POST",
+            url: "PropertyUnitImage.ashx",
+            data: { "Action": "GetImage", FloorId: floor },
+            dataType: "json",
+            success: function (data) {
+                if (data.Success) {
+                    if (parseInt(data.Width) == 0 || parseInt(data.Height) == 0) {
+                        alert("楼栋图非法,请在基础管理→商业项目维护→楼层维护中重新上传楼栋图！");
+                        return false;
+                    }
+                    //装载SVG信息
+                    document.getElementById('svgWidthHeight').value = data.Data;
+                    document.getElementById('svgWidthHeight').setAttribute('width',data.Width);
+                    document.getElementById('svgWidthHeight').setAttribute('height',data.Height);
+
+                    //加载落位
+                    LoadDirect(floor);
+ 
+                }
+                else {
+                    //alert(data.Data);
+                    alert("请在基础管理→商业项目维护→楼层维护中上传楼栋图！");
+                    //加载背景图
+                    var svgElement = '<svg width="480" height="640" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g><title> </title></g></svg>';//用于加载SVG元素
+
+                    var svgCanvas = new embedded_svg_edit(document.getElementById('svgedit'));
+                    svgCanvas.setSvgString(svgElement);
+                }
+            }
+        });
+    }
+</script>

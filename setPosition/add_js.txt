@@ -1,0 +1,16 @@
+protected void SaveUnitImage_Click(object sender, EventArgs e)
+        {
+            Guid floorUId, mallUId, buildingUId;
+            Guid.TryParse(Request.QueryString["FloorId"], out floorUId);
+            Guid.TryParse(Request.QueryString["MallId"], out mallUId);
+            Guid.TryParse(Request.QueryString["BuildingId"], out buildingUId);
+            var url = string.Format(@"/UI/BasicData/PropertyUnitManage.aspx?Source=PropertyUnitImageSelect&FloorId={0}&MallId={1}&BuildingId={2}", floorUId, mallUId, buildingUId);
+            PageContext.RegisterStartupScript(SetTradeVer.GetSaveStateReference(PropertyUnitId.ClientID)
+                    + SetTradeVer.GetShowReference(url, "选择单元"));//选择单元
+            SetTradeVer.Hidden = false;
+        }
+
+        protected void SetTradeVer_Close(object sender, WindowCloseEventArgs e)
+        {
+            PageContext.RegisterStartupScript("SaveDicrection('" + PropertyUnitId.Text + "');");
+        }
